@@ -1,25 +1,39 @@
 import sys
 
-def scanner():
-	return 0
+hadError = False
+
+def scanner(source):
+	scanner = Scanner(source)
+	tokens = scanner.scanTokens()
+	for i in tokens:
+		print(i)
 
 def runSource(source):
 	totalString = "".join(source)
 	print("running " + totalString)
-	
+	scannre(source)
+
+def error(lineNum, message):
+	report(lineNum, "", message)
+
+def report(lineNum, location, message):
+	global hadError
+
+	print("[Line " + String(lineNum) + "] Error" + where + ": " + message)
+	hadError = True
 
 def runFile(fname):
 	print("running a script called " + fname)
 	f = open(fname, 'r')
 	runSource(f.readlines())
-	return 0
+	if(hadError):
+		sys.exit(65)
 
 def runPrompt():
 	print("entering the repl")
 	while(True):
 		print("> ")
 		runSource(input())
-	return 0
 
 def main():
 	if(len(sys.argv) > 2):
