@@ -8,7 +8,7 @@ class Scanner:
 		self.source = source
 
 	def scanTokens():
-		while(!isAtEnd):
+		while(not isAtEnd()):
 			self.start = self.current
 			scanToken()
 		tokens.append(Token(EOF, "", None, line))
@@ -42,7 +42,7 @@ class Scanner:
 		current += 1
 		return self.source[1:]
 
-	addToken(type, literal=None):
+	def addToken(type, literal=None):
 		text = self.source[start:current]
 		tokens.append(Token(type, text, literal, line))
 
