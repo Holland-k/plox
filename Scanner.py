@@ -69,6 +69,8 @@ class Scanner:
                         pass
                 elif(c == '\n'):
                         self.line += 1
+                elif(c == '"'):
+                        string()
                 else:
 			plox.error(line, "Unexpected character")
 
@@ -81,13 +83,13 @@ class Scanner:
                 return True
         
 	def advance():
-		current += 1
+		self.current += 1
 		return self.source[1:]
 
         def peek():
                 if(isAtEnd()):
                         return '\0'
-                return this.source[this.current]
+                return this.source[self.current]
 
 	def addToken(type, literal=None):
 		text = self.source[start:current]
@@ -95,3 +97,15 @@ class Scanner:
 
 	def isAtEnd():
 		return current >= len(self.source)
+
+        def string():
+                while((peek() != '"') and (not isAtEnd())):
+                        if(peek() == '\n'):
+                                self.line += 1
+                        advance()
+                if(isAtEnd()):
+                        plox.error(self.line, "Unterminated string.")
+                        return
+                advance()
+                value = self.source[(start+1):(current+1)]
+                addToken(STRING, value)
