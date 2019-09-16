@@ -1,9 +1,10 @@
 import sys
+import Scanner
 
 hadError = False
 
 def scanner(source):
-	scanner = Scanner(source)
+	scanner = Scanner.Scanner(source)
 	tokens = scanner.scanTokens()
 	for i in tokens:
 		print(i)
@@ -11,7 +12,7 @@ def scanner(source):
 def runSource(source):
 	totalString = "".join(source)
 	print("running " + totalString)
-	scannre(source)
+	scanner(source)
 
 def error(lineNum, message):
 	report(lineNum, "", message)

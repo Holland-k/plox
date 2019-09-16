@@ -1,20 +1,23 @@
-import TokenType
+from TokenType import TokenType
+from Token import Token
 
 class Scanner:
 	current = 0
 	start = 0
 	line = 1
-	def Scanner(source):
+        tokens = []
+        
+	def __init__(self, source):
 		self.source = source
 
-	def scanTokens():
-		while(not isAtEnd()):
+	def scanTokens(self):
+		while(not self.isAtEnd()):
 			self.start = self.current
-			scanToken()
-		tokens.append(Token(EOF, "", None, line))
+			self.scanToken()
+		self.tokens.append(Token(TokenType.EOF, "", None, self.line))
 
-	def scanToken():
-		c = advance();
+	def scanToken(self):
+		c = self.advance();
 		if(c == '('):
 			addToken(LEFT_PAREN)
 		elif(c == ')'):
@@ -71,34 +74,42 @@ class Scanner:
                         self.line += 1
                 elif(c == '"'):
                         string()
+                elif(self.isDigit(c)):
+                        number()
                 else:
-			plox.error(line, "Unexpected character")
+			##plox.error(line, "Unexpected character")
+                        pass
 
-        def match(c):
-                if(isAteEnd()):
+        def match(self, c):
+                if(self.isAtEnd()):
                         return False
                 if(self.source[self.current] != c):
                         return False
                 self.current += 1
                 return True
         
-	def advance():
+	def advance(self):
 		self.current += 1
 		return self.source[1:]
 
-        def peek():
+        def peek(self):
                 if(isAtEnd()):
                         return '\0'
                 return this.source[self.current]
 
-	def addToken(type, literal=None):
+        def peekNext(self):
+                if(self.current +1 >= len(self.source)):
+                        return '\0'
+                return self.source[self.current+1]
+
+	def addToken(self, type, literal=None):
 		text = self.source[start:current]
 		tokens.append(Token(type, text, literal, line))
 
-	def isAtEnd():
-		return current >= len(self.source)
+	def isAtEnd(self):
+		return self.current >= len(self.source)
 
-        def string():
+        def string(self):
                 while((peek() != '"') and (not isAtEnd())):
                         if(peek() == '\n'):
                                 self.line += 1
@@ -109,3 +120,15 @@ class Scanner:
                 advance()
                 value = self.source[(start+1):(current+1)]
                 addToken(STRING, value)
+
+        def isDigit(self, c):
+                return c >= '0' and c <= '9'
+
+        def number(self):
+                while(isDigit(peek())):
+                        advance()
+                if(peek() == '.' and isDigit(peekNext())):
+                        advance()
+                        while(isDigit(peek())):
+                                advance()
+                addToken(Number, float(self.source[self.start,self.current]))
