@@ -1,4 +1,4 @@
-from TokenType import TokenType
+from TokenType import *
 from Token import Token
 
 class Scanner:
@@ -15,55 +15,57 @@ class Scanner:
 			self.start = self.current
 			self.scanToken()
 		self.tokens.append(Token(TokenType.EOF, "", None, self.line))
+                return self.tokens
 
 	def scanToken(self):
-		c = self.advance();
+		c = self.advance()
+                print(c)
 		if(c == '('):
-			addToken(LEFT_PAREN)
+			self.addToken(LEFT_PAREN)
 		elif(c == ')'):
-			addToken(RIGHT_PAREN)
+			self.addToken(RIGHT_PAREN)
 		elif(c == '{'):
-			addToken(LEFT_BRACE)
+			self.addToken(LEFT_BRACE)
 		elif(c == '}'):
-			addToken(RIGHT_BRACE)
+			self.addToken(RIGHT_BRACE)
 		elif(c == ','):
-			addToken(COMMA)
+			self.addToken(COMMA)
 		elif(c == '.'):
-			addToken(DOT)
+			self.addToken(DOT)
 		elif(c == '-'):
-			addToken(MINUS)
+			self.addToken(MINUS)
 		elif(c == '+'):
-			addToken(PLUS)
+			self.addToken(PLUS)
 		elif(c == ';'):
-			addToken(SEMICOLON)
+			self.addToken(SEMICOLON)
 		elif(c == '*'):
-			addToken(STAR)
+			self.addToken(STAR)
                 elif(c == '!'):
-                        if(match('=')):
-                                addToken(BANG_EQUAL)
+                        if(self.match('=')):
+                                self.addToken(BANG_EQUAL)
                         else:
-                                addToken(BANG)
+                                self.addToken(TokenType(12))
                 elif(c == '='):
-                        if(match('=')):
-                                addToken(EQUAL_EQUAL)
+                        if(self.match('=')):
+                                self.addToken(EQUAL_EQUAL)
                         else:
-                                addToken(EQUAL)
+                                self.addToken(EQUAL)
                 elif(c == '<'):
-                        if(match('=')):
-                                addToken(LESS_EQUAL)
+                        if(self.match('=')):
+                                self.addToken(LESS_EQUAL)
                         else:
-                                addToken(LESS)
+                                self.addToken(LESS)
                 elif(c == '>'):
-                        if(match('=')):
-                                addToken(GREATER_EQUAL)
+                        if(self.match('=')):
+                                self.addToken(GREATER_EQUAL)
                         else:
-                                addToken(GREATER)
+                                self.addToken(GREATER)
                 elif(c == '/'):
-                        if(match('/')):
-                                while((peek() != '\n') and (not isAtEnd())):
-                                      advance()
+                        if(self.match('/')):
+                                while((self.peek() != '\n') and (not self.isAtEnd())):
+                                        self.advance()
                         else:
-                                addToken(SLASH)
+                                self.addToken(SLASH)
                 elif(c == ' '):
                         pass
                 elif(c == '\r'):
@@ -90,45 +92,46 @@ class Scanner:
         
 	def advance(self):
 		self.current += 1
-		return self.source[1:]
+		return self.source[self.current-1]
 
         def peek(self):
-                if(isAtEnd()):
+                if(self.isAtEnd()):
                         return '\0'
-                return this.source[self.current]
+                return self.source[self.current]
 
         def peekNext(self):
                 if(self.current +1 >= len(self.source)):
                         return '\0'
                 return self.source[self.current+1]
 
-	def addToken(self, type, literal=None):
-		text = self.source[start:current]
-		tokens.append(Token(type, text, literal, line))
+	def addToken(self, ttype, literal=None):
+		text = self.source[self.start:self.current]
+                print("adding token " + text)
+		self.tokens.append(Token(ttype, text, literal, self.line))
 
 	def isAtEnd(self):
 		return self.current >= len(self.source)
 
         def string(self):
-                while((peek() != '"') and (not isAtEnd())):
-                        if(peek() == '\n'):
+                while((self.peek() != '"') and (not self.isAtEnd())):
+                        if(self.peek() == '\n'):
                                 self.line += 1
                         advance()
-                if(isAtEnd()):
+                if(self.isAtEnd()):
                         plox.error(self.line, "Unterminated string.")
                         return
                 advance()
                 value = self.source[(start+1):(current+1)]
-                addToken(STRING, value)
+                self.addToken(STRING, value)
 
         def isDigit(self, c):
                 return c >= '0' and c <= '9'
 
         def number(self):
-                while(isDigit(peek())):
+                while(isDigit(self.peek())):
                         advance()
-                if(peek() == '.' and isDigit(peekNext())):
+                if(self.peek() == '.' and isDigit(self.peekNext())):
                         advance()
-                        while(isDigit(peek())):
+                        while(isDigit(self.peek())):
                                 advance()
-                addToken(Number, float(self.source[self.start,self.current]))
+                self.addToken(Number, float(self.source[self.start,self.current]))

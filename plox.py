@@ -7,7 +7,7 @@ def scanner(source):
 	scanner = Scanner.Scanner(source)
 	tokens = scanner.scanTokens()
 	for i in tokens:
-		print(i)
+		print(i.toString())
 
 def runSource(source):
 	totalString = "".join(source)
