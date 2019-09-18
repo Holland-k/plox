@@ -75,9 +75,9 @@ class Scanner:
                 elif(c == '\n'):
                         self.line += 1
                 elif(c == '"'):
-                        string()
+                        self.string()
                 elif(self.isDigit(c)):
-                        number()
+                        self.number()
                 else:
 			##plox.error(line, "Unexpected character")
                         pass
@@ -127,10 +127,10 @@ class Scanner:
                 return c >= '0' and c <= '9'
 
         def number(self):
-                while(isDigit(self.peek())):
+                while(self.isDigit(self.peek())):
                         advance()
                 if(self.peek() == '.' and isDigit(self.peekNext())):
                         advance()
                         while(isDigit(self.peek())):
                                 advance()
-                self.addToken(TokenType(22), float(self.source[self.start,self.current]))
+                self.addToken(TokenType(22), float(self.source[self.start:self.current]))
