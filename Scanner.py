@@ -21,51 +21,51 @@ class Scanner:
 		c = self.advance()
                 print(c)
 		if(c == '('):
-			self.addToken(TokenType(1))
+			self.addToken(TokenType.LEFT_PAREN)
 		elif(c == ')'):
-			self.addToken(TokenType(2))
+			self.addToken(TokenType.RIGHT_PAREN)
 		elif(c == '{'):
-			self.addToken(TokenType(3))
+			self.addToken(TokenType.LEFT_BRACE)
 		elif(c == '}'):
-			self.addToken(TokenType(4))
+			self.addToken(TokenType.RIGHT_BRACE)
 		elif(c == ','):
-			self.addToken(TokenType(5))
+			self.addToken(TokenType.COMMA)
 		elif(c == '.'):
-			self.addToken(TokenType(6))
+			self.addToken(TokenType.DOT)
 		elif(c == '-'):
-			self.addToken(TokenType(7))
+			self.addToken(TokenType.MINUS)
 		elif(c == '+'):
-			self.addToken(TokenType(8))
+			self.addToken(TokenType.PLUS)
 		elif(c == ';'):
-			self.addToken(TokenType(9))
+			self.addToken(TokenType.SEMICOLON)
 		elif(c == '*'):
-			self.addToken(TokenType(11))
+			self.addToken(TokenType.STAR)
                 elif(c == '!'):
                         if(self.match('=')):
-                                self.addToken(TokenType(13))
+                                self.addToken(TokenType.BANG_EQUAL)
                         else:
-                                self.addToken(TokenType(12))
+                                self.addToken(TokenType.BANG)
                 elif(c == '='):
                         if(self.match('=')):
-                                self.addToken(TokenType(15))
+                                self.addToken(TokenType.EQUAL_EQUAL)
                         else:
-                                self.addToken(TokenType(14))
+                                self.addToken(TokenType.EQUAL)
                 elif(c == '<'):
                         if(self.match('=')):
-                                self.addToken(TokenType(19))
+                                self.addToken(TokenType.LESS_EQUAL)
                         else:
-                                self.addToken(TokenType(18))
+                                self.addToken(TokenType.LESS)
                 elif(c == '>'):
                         if(self.match('=')):
-                                self.addToken(TokenType(17))
+                                self.addToken(TokenType.GREATER_EQUAL)
                         else:
-                                self.addToken(TokenType(16))
+                                self.addToken(TokenType.GREATER)
                 elif(c == '/'):
                         if(self.match('/')):
                                 while((self.peek() != '\n') and (not self.isAtEnd())):
                                         self.advance()
                         else:
-                                self.addToken(TokenType(10))
+                                self.addToken(TokenType.SLASH)
                 elif(c == ' '):
                         pass
                 elif(c == '\r'):
@@ -115,22 +115,22 @@ class Scanner:
                 while((self.peek() != '"') and (not self.isAtEnd())):
                         if(self.peek() == '\n'):
                                 self.line += 1
-                        advance()
+                        self.advance()
                 if(self.isAtEnd()):
                         plox.error(self.line, "Unterminated string.")
                         return
-                advance()
-                value = self.source[(start+1):(current+1)]
-                self.addToken(TokenType(21), value)
+                self.advance()
+                value = self.source[(self.start+1):(self.current+1)]
+                self.addToken(TokenType.STRING, value)
 
         def isDigit(self, c):
                 return c >= '0' and c <= '9'
 
         def number(self):
                 while(self.isDigit(self.peek())):
-                        advance()
-                if(self.peek() == '.' and isDigit(self.peekNext())):
-                        advance()
-                        while(isDigit(self.peek())):
-                                advance()
-                self.addToken(TokenType(22), float(self.source[self.start:self.current]))
+                        self.advance()
+                if(self.peek() == '.' and self.isDigit(self.peekNext())):
+                        self.advance()
+                        while(self.isDigit(self.peek())):
+                                self.advance()
+                self.addToken(TokenType.NUMBER, float(self.source[self.start:self.current]))
