@@ -6,15 +6,41 @@ class Scanner:
 	start = 0
 	line = 1
         tokens = []
+
+        keywords = {
+                "and" : AND,
+                "class" :  CLASS,
+                "else" :   ELSE,
+                "false" :  FALSE,
+                "for" :    FOR,
+                "fun" :    FUN,
+                "if" :     IF,
+                "nil" :    NIL,
+                "or" :     OR,
+                "print" :  PRINT,
+                "return" : RETURN,
+                "super" :  SUPER,
+                "this" :   THIS,
+                "true" :   TRUE,
+                "var" :    VAR,
+                "while" :  WHILE
+                }
         
 	def __init__(self, source):
 		self.source = source
 
+        def testScan(self, source):
+                self.source = source
+                self.current = 0
+                self.start = 0
+                self.line = 1
+                self.tokens = []
+                
 	def scanTokens(self):
 		while(not self.isAtEnd()):
 			self.start = self.current
 			self.scanToken()
-		self.tokens.append(Token(TokenType.EOF, "", None, self.line))
+		    self.tokens.append(Token(TokenType.EOF, "", None, self.line))
                 return self.tokens
 
 	def scanToken(self):
@@ -78,6 +104,8 @@ class Scanner:
                         self.string()
                 elif(self.isDigit(c)):
                         self.number()
+                elif(self.isAlpha(c)):
+                        self.identifier()
                 else:
 			##plox.error(line, "Unexpected character")
                         pass
@@ -120,12 +148,29 @@ class Scanner:
                         plox.error(self.line, "Unterminated string.")
                         return
                 self.advance()
-                value = self.source[(self.start+1):(self.current+1)]
-                self.addToken(TokenType.STRING, value)
+                tvalue = self.source[(self.start+1):(self.current+1)]
+                self.addToken(TokenType.STRING, tvalue)
 
         def isDigit(self, c):
                 return c >= '0' and c <= '9'
 
+        def isAlpha(self, c):
+                return ((c >= 'a' and c <= 'z') or
+                        (c >= 'A' and c <= 'Z') or
+                        (c == '_'))
+
+        def isAlphaNumeric(self, c):
+                return (self.isAlpha(c) or self.isDigit(c))
+
+        def identifier(self):
+                while(self.isAlphaNumeric(self.peek())):
+                        self.advance()
+                s = self.source[self.start:self.current]
+                if(s in self.keywords):
+                        self.addToken(IDENTIFIER)
+                else:
+                        self.addToken(s)
+        
         def number(self):
                 while(self.isDigit(self.peek())):
                         self.advance()
