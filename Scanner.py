@@ -8,22 +8,22 @@ class Scanner:
         tokens = []
 
         keywords = {
-                "and" : AND,
-                "class" :  CLASS,
-                "else" :   ELSE,
-                "false" :  FALSE,
-                "for" :    FOR,
-                "fun" :    FUN,
-                "if" :     IF,
-                "nil" :    NIL,
-                "or" :     OR,
-                "print" :  PRINT,
-                "return" : RETURN,
-                "super" :  SUPER,
-                "this" :   THIS,
-                "true" :   TRUE,
-                "var" :    VAR,
-                "while" :  WHILE
+                "and" : TokenType.AND,
+                "class" :  TokenType.CLASS,
+                "else" :   TokenType.ELSE,
+                "false" :  TokenType.FALSE,
+                "for" :    TokenType.FOR,
+                "fun" :    TokenType.FUN,
+                "if" :     TokenType.IF,
+                "nil" :    TokenType.NIL,
+                "or" :     TokenType.OR,
+                "print" :  TokenType.PRINT,
+                "return" : TokenType.RETURN,
+                "super" :  TokenType.SUPER,
+                "this" :   TokenType.THIS,
+                "true" :   TokenType.TRUE,
+                "var" :    TokenType.VAR,
+                "while" :  TokenType.WHILE
                 }
         
 	def __init__(self, source):
@@ -40,12 +40,12 @@ class Scanner:
 		while(not self.isAtEnd()):
 			self.start = self.current
 			self.scanToken()
-		    self.tokens.append(Token(TokenType.EOF, "", None, self.line))
+		self.tokens.append(Token(TokenType.EOF, "", None, self.line))
                 return self.tokens
 
 	def scanToken(self):
 		c = self.advance()
-                print(c)
+                #print(c)
 		if(c == '('):
 			self.addToken(TokenType.LEFT_PAREN)
 		elif(c == ')'):
@@ -166,8 +166,8 @@ class Scanner:
                 while(self.isAlphaNumeric(self.peek())):
                         self.advance()
                 s = self.source[self.start:self.current]
-                if(s in self.keywords):
-                        self.addToken(IDENTIFIER)
+                if(s.lower() in self.keywords):
+                        self.addToken(TokenType.IDENTIFIER)
                 else:
                         self.addToken(s)
         
