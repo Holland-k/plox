@@ -1,11 +1,19 @@
 import sys
 
+def getArgs(fields):
+    t = ""
+    for f in fields:
+        name = f.split(" ")[1]
+        t = t + name + ", "
+    return t[:-2]
+
 def defineType(fn, baseName, className, fieldList):
     #class Binary(Expr):0
     fn.write("class " + className + "(" + baseName + "):\n")
 
     #def Binary(Expr left, Token operator, Expr right):
-    fn.write("    def " + className + "(" + fieldList + "):\n")
+    argList = getArgs(fieldList.split(", "))
+    fn.write("    def " + className + "(" + argList + "):\n")
     fields = fieldList.split(", ")
     for f in fields:
         name = f.split(" ")[1]
@@ -27,18 +35,18 @@ def defineAST(outDir, baseName, types):
         fields = t.split(":")[1].strip()
         defineType(writeFile, baseName, className, fields)
         writeFile.write("\n")
-        writeFile.write("    def accept(Visitor visitor):\n")
+        writeFile.write("    def accept(visitor):\n")
         writeFile.write("        return visitor.visit" +
                         className + baseName + "(self)\n\n")
        
     writeFile.close()
 
 def defineVisitor(writeFile, baseName, types):
-    writeFile.write("class Visitor(ABC):\n\n")
+    writeFile.write("    class Visitor(ABC):\n\n")
     for t in types:
         typeName = t.split(":")[0].strip()
-        writeFile.write("   def visit" + typeName + baseName + "(" + typeName + " " + baseName.lower() + "):\n")
-        writeFile.write("      pass\n\n")
+        writeFile.write("        def visit" + typeName + baseName + "(" + baseName.lower() + "):\n")
+        writeFile.write("            pass\n\n")
 
 def main():
     if(len(sys.argv) != 2):

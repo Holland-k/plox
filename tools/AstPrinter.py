@@ -1,20 +1,21 @@
+import Expr
 
-def AstPrinter(Expr.Visitor):
-    def print(Expr exp):
+def AstPrinter(Visitor):
+    def print(exp):
         return exp.accept(self)
 
-    def visitBinaryExpr(Expr.Binary exp):
+    def visitBinaryExpr(exp):
         return parenthesize(exp.operator.lexeme, exp.left, exp.right)
 
-    def visitGroupingExpr(Expr.Binary exp):
+    def visitGroupingExpr(exp):
         return parenthesize("group", exp.expression)
     
-    def visitLiteralExpr(Expr.Binary exp):
+    def visitLiteralExpr(exp):
         if(exp.value == None):
             return None
         return str(exp.value)
     
-    def visitUnaryExpr(Expr.Binary exp):
+    def visitUnaryExpr(exp):
         return parenthesize(exp.operator.lexeme, exp.right)
 
     def parenthesize(name, exp):
@@ -26,7 +27,7 @@ def AstPrinter(Expr.Visitor):
 
         return st
 
-def main():
+def run_main():
     exp = Expr.Binary(
         Expr.Unary(
             Token(TokenType.MINUS, "-", null, 1),
@@ -35,7 +36,6 @@ def main():
         Expr.Grouping(
             Expr.Literal(45.67)))
 
-    print(AstPrinter.print(exp)
+    print(AstPrinter.print(exp))
 
-
-main()
+run_main()
